@@ -6,6 +6,12 @@ const FETCH_TIMEOUT_MS = 10_000
 
 async function extractPdfText(buffer: Buffer): Promise<string> {
   try {
+    // pdfjs-dist references DOMMatrix (a browser API) during module init.
+    // It's not available in Node.js serverless — stub it out before importing.
+    if (typeof (globalThis as Record<string, unknown>).DOMMatrix === 'undefined') {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ;(globalThis as any).DOMMatrix = class {}
+    }
     const { PDFParse } = await import('pdf-parse')
     const parser = new PDFParse({ data: buffer })
     const result = await parser.getText()
