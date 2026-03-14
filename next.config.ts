@@ -1,7 +1,17 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  /* config options here */
-};
+  serverExternalPackages: ['pdf-parse'],
+  turbopack: {
+    resolveAlias: {
+      canvas: './empty-module.js',
+    },
+  },
+  webpack: (config) => {
+    // react-pdf requires canvas to be aliased out in server context
+    config.resolve.alias.canvas = false
+    return config
+  },
+}
 
-export default nextConfig;
+export default nextConfig
