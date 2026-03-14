@@ -22,6 +22,7 @@ export default function HomePage() {
       router.push('/doc')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Upload failed')
+    } finally {
       setLoading(false)
     }
   }
@@ -41,6 +42,7 @@ export default function HomePage() {
       router.push('/doc')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Upload failed')
+    } finally {
       setLoading(false)
     }
   }
