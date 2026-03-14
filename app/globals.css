@@ -1,5 +1,47 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&family=DM+Mono:wght@400;500&display=swap');
+
+@font-face {
+  font-family: 'Ronzino';
+  src: url('/fonts/Ronzino-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Ronzino';
+  src: url('/fonts/Ronzino-Oblique.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Ronzino';
+  src: url('/fonts/Ronzino-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Ronzino';
+  src: url('/fonts/Ronzino-MediumOblique.woff2') format('woff2');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Ronzino';
+  src: url('/fonts/Ronzino-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Ronzino';
+  src: url('/fonts/Ronzino-BoldOblique.woff2') format('woff2');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
 
 :root {
   --bg: #0a0a0a;
@@ -24,7 +66,7 @@
 html, body {
   background: var(--bg);
   color: var(--text-primary);
-  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Ronzino', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 14px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -97,7 +139,7 @@ html, body {
 
 /* Mono font utility */
 .font-mono {
-  font-family: 'DM Mono', 'SF Mono', 'Fira Code', monospace;
+  font-family: 'Ronzino', 'SF Mono', 'Fira Code', monospace;
 }
 
 /* Loading dots */
