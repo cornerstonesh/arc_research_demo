@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback } from "react";
 
 interface UploadZoneProps {
   onUpload: (file: File) => void;
@@ -12,6 +12,14 @@ export default function UploadZone({ onUpload, onUrl, loading }: UploadZoneProps
   const [isDragging, setIsDragging] = useState(false);
   const [url, setUrl] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const dragCounter = useRef(0);
+
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounter.current++;
+    if (!loading) setIsDragging(true);
+  };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -22,16 +30,20 @@ export default function UploadZone({ onUpload, onUrl, loading }: UploadZoneProps
   const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsDragging(false);
+    dragCounter.current--;
+    if (dragCounter.current === 0) setIsDragging(false);
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
+    dragCounter.current = 0;
     setIsDragging(false);
     if (loading) return;
     const file = e.dataTransfer.files?.[0];
-    if (file) onUpload(file);
+    if (!file) return;
+    if (file.type !== "application/pdf" && !file.name.endsWith(".pdf")) return;
+    onUpload(file);
   };
 
   const handleZoneClick = () => {
@@ -94,6 +106,7 @@ export default function UploadZone({ onUpload, onUrl, loading }: UploadZoneProps
       {/* Drop zone */}
       <div
         style={dropZoneStyle}
+        onDragEnter={handleDragEnter}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}

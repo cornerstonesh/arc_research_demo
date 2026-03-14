@@ -16,7 +16,12 @@ export async function POST(request: NextRequest) {
     const raw = await arcComplete('research-classify', messages)
     // The route returns a single category label. Normalize to one of the known values.
     const known = ['Legal', 'Medical', 'Finance', 'Technical', 'Research']
-    const category = known.find(c => raw.toLowerCase().includes(c.toLowerCase())) ?? 'Research'
+    // Try exact match first, then substring match on trimmed first line
+    const firstLine = raw.split('\n')[0].trim()
+    const category =
+      known.find(c => firstLine.toLowerCase() === c.toLowerCase()) ??
+      known.find(c => raw.toLowerCase().includes(c.toLowerCase())) ??
+      'Research'
 
     return NextResponse.json({ category })
   } catch (err) {
