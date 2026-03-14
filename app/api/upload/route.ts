@@ -6,35 +6,10 @@ const FETCH_TIMEOUT_MS = 10_000
 
 async function extractPdfText(buffer: Buffer): Promise<string> {
   try {
-    // DOMMatrix is referenced by pdfjs-dist during init but not used for text extraction.
-    // Stub it out for Node.js serverless environments.
-    if (typeof (globalThis as Record<string, unknown>).DOMMatrix === 'undefined') {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ;(globalThis as any).DOMMatrix = class {}
-    }
-
-    const { getDocument, GlobalWorkerOptions } = await import('pdfjs-dist')
-
-    // Empty string = no external worker file; pdfjs-dist runs inline on the main thread.
-    // This avoids needing to locate/bundle pdf.worker.mjs in a serverless environment.
-    GlobalWorkerOptions.workerSrc = ''
-
-    const loadingTask = getDocument({ data: new Uint8Array(buffer) })
-    const pdf = await loadingTask.promise
-
-    const parts: string[] = []
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i)
-      const content = await page.getTextContent()
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const pageText = content.items
-        .filter((item: any) => typeof item.str === 'string')
-        .map((item: any) => item.str as string)
-        .join(' ')
-      parts.push(pageText)
-    }
-
-    return parts.join('\n\n')
+    // unpdf bundles pdfjs-dist pre-configured for serverless — no worker setup needed
+    const { extractText } = await import('unpdf')
+    const { text } = await extractText(new Uint8Array(buffer))
+    return Array.isArray(text) ? text.join('\n\n') : (text as string)
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
     throw new Error(`PDF parse failed: ${msg}`)
