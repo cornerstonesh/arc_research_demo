@@ -51,10 +51,17 @@ export default function DocPage() {
         alignItems: 'center',
         justifyContent: 'center',
         background: 'var(--bg)',
-        color: 'var(--text-muted)',
-        fontSize: '0.875rem',
+        flexDirection: 'column',
+        gap: '1rem',
       }}>
-        Loading...
+        <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+          <span className="loading-dot" />
+          <span className="loading-dot" />
+          <span className="loading-dot" />
+        </div>
+        <span style={{ color: 'var(--text-muted)', fontSize: '0.8125rem', letterSpacing: '0.02em' }}>
+          Loading document
+        </span>
       </div>
     )
   }
@@ -75,21 +82,43 @@ export default function DocPage() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '0.75rem 1.5rem',
+        padding: '0.625rem 1.25rem',
         borderBottom: '1px solid var(--border)',
         background: 'var(--surface)',
         flexShrink: 0,
+        gap: '1rem',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <span style={{
-            fontSize: '0.875rem',
-            fontWeight: 600,
-            letterSpacing: '0.08em',
-            color: 'var(--text-primary)',
-            textTransform: 'uppercase',
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          {/* Logo mark */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '26px',
+            height: '26px',
+            borderRadius: '6px',
+            background: 'linear-gradient(135deg, var(--accent) 0%, rgba(99,102,241,0.5) 100%)',
+            flexShrink: 0,
           }}>
-            Research
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+            </svg>
+          </div>
+          <span style={{
+            fontSize: '0.8125rem',
+            fontWeight: 600,
+            letterSpacing: '0.01em',
+            color: 'var(--text-primary)',
+          }}>
+            Document Research
           </span>
+          <div style={{
+            width: '1px',
+            height: '14px',
+            background: 'var(--border)',
+            flexShrink: 0,
+          }} />
           <ClassificationBadge category={category} />
         </div>
         <button
@@ -98,15 +127,33 @@ export default function DocPage() {
             router.push('/')
           }}
           style={{
-            background: 'var(--surface-2)',
+            background: 'transparent',
             border: '1px solid var(--border)',
             borderRadius: '6px',
             color: 'var(--text-secondary)',
-            padding: '0.4rem 0.875rem',
+            padding: '0.375rem 0.75rem',
             fontSize: '0.8125rem',
+            fontWeight: 500,
             cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            transition: 'border-color 0.15s ease, color 0.15s ease',
+            flexShrink: 0,
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.borderColor = 'var(--text-muted)'
+            e.currentTarget.style.color = 'var(--text-primary)'
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.borderColor = 'var(--border)'
+            e.currentTarget.style.color = 'var(--text-secondary)'
           }}
         >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
           New Document
         </button>
       </header>

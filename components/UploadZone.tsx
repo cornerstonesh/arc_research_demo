@@ -71,21 +71,25 @@ export default function UploadZone({ onUpload, onUrl, loading }: UploadZoneProps
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    minHeight: "280px",
+    minHeight: "240px",
     border: `1.5px dashed ${isDragging ? "var(--accent)" : "var(--border)"}`,
     borderRadius: "12px",
     background: isDragging
-      ? "rgba(99, 102, 241, 0.04)"
+      ? "rgba(99, 102, 241, 0.05)"
+      : loading
+      ? "var(--surface-2)"
       : "var(--surface)",
-    cursor: loading ? "not-allowed" : "pointer",
-    transition: "border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease",
+    cursor: loading ? "default" : "pointer",
+    transition: "border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease",
     boxShadow: isDragging
-      ? "0 0 0 2px var(--accent), 0 0 30px rgba(99, 102, 241, 0.15)"
+      ? "0 0 0 2px var(--accent), 0 0 36px rgba(99, 102, 241, 0.15)"
       : "none",
-    opacity: loading ? 0.6 : 1,
+    opacity: loading ? 0.75 : 1,
     userSelect: "none",
-    gap: "10px",
+    gap: "12px",
     padding: "40px 24px",
+    position: "relative",
+    overflow: "hidden",
   };
 
   const iconWrapStyle: React.CSSProperties = {
@@ -118,45 +122,60 @@ export default function UploadZone({ onUpload, onUrl, loading }: UploadZoneProps
           if (e.key === "Enter" || e.key === " ") handleZoneClick();
         }}
       >
-        <div style={iconWrapStyle}>
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke={isDragging ? "var(--accent)" : "var(--text-secondary)"}
-            strokeWidth="1.75"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{ transition: "stroke 0.15s ease" }}
-          >
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="17 8 12 3 7 8" />
-            <line x1="12" y1="3" x2="12" y2="15" />
-          </svg>
-        </div>
+        {loading ? (
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px" }}>
+            <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+              <span className="loading-dot" />
+              <span className="loading-dot" />
+              <span className="loading-dot" />
+            </div>
+            <p style={{ fontSize: "13px", color: "var(--text-muted)" }}>
+              Processing document...
+            </p>
+          </div>
+        ) : (
+          <>
+            <div style={iconWrapStyle}>
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke={isDragging ? "var(--accent)" : "var(--text-secondary)"}
+                strokeWidth="1.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ transition: "stroke 0.15s ease" }}
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="17 8 12 3 7 8" />
+                <line x1="12" y1="3" x2="12" y2="15" />
+              </svg>
+            </div>
 
-        <div style={{ textAlign: "center", lineHeight: 1.5 }}>
-          <p
-            style={{
-              fontSize: "15px",
-              fontWeight: 500,
-              color: isDragging ? "var(--accent)" : "var(--text-primary)",
-              transition: "color 0.15s ease",
-              marginBottom: "4px",
-            }}
-          >
-            Drag &amp; drop a PDF
-          </p>
-          <p
-            style={{
-              fontSize: "13px",
-              color: "var(--text-muted)",
-            }}
-          >
-            or click to browse
-          </p>
-        </div>
+            <div style={{ textAlign: "center", lineHeight: 1.5 }}>
+              <p
+                style={{
+                  fontSize: "15px",
+                  fontWeight: 500,
+                  color: isDragging ? "var(--accent)" : "var(--text-primary)",
+                  transition: "color 0.15s ease",
+                  marginBottom: "4px",
+                }}
+              >
+                Drag &amp; drop a PDF
+              </p>
+              <p
+                style={{
+                  fontSize: "13px",
+                  color: "var(--text-muted)",
+                }}
+              >
+                or click to browse &mdash; up to 20 MB
+              </p>
+            </div>
+          </>
+        )}
 
         <input
           ref={fileInputRef}
@@ -170,18 +189,21 @@ export default function UploadZone({ onUpload, onUrl, loading }: UploadZoneProps
       </div>
 
       {/* URL input row */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-        <label
-          style={{
-            fontSize: "12px",
+      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div style={{ flex: 1, height: "1px", background: "var(--border)" }} />
+          <span style={{
+            fontSize: "11px",
             color: "var(--text-muted)",
-            letterSpacing: "0.04em",
+            letterSpacing: "0.06em",
             textTransform: "uppercase",
             fontWeight: 500,
-          }}
-        >
-          or paste a PDF URL
-        </label>
+            flexShrink: 0,
+          }}>
+            or paste a URL
+          </span>
+          <div style={{ flex: 1, height: "1px", background: "var(--border)" }} />
+        </div>
         <form
           onSubmit={handleUrlSubmit}
           style={{ display: "flex", gap: "8px" }}

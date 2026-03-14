@@ -27,27 +27,38 @@ function SkeletonView() {
         height: '100%',
         overflowY: 'auto',
         background: 'var(--surface)',
-        borderRight: '1px solid var(--border)',
-        padding: '24px',
+        padding: '28px 24px',
         display: 'flex',
         flexDirection: 'column',
         gap: '10px',
       }}
     >
+      {/* Fake page header */}
+      <div className="skeleton" style={{ width: '55%', height: '20px', marginBottom: '8px' }} />
       {SKELETON_WIDTHS.map((width, i) => (
         <div
           key={i}
           className="skeleton"
-          style={{ width, height: '16px' }}
+          style={{ width, height: '14px', animationDelay: `${i * 60}ms` }}
         />
       ))}
       {/* Second paragraph group */}
-      <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {SKELETON_WIDTHS.map((width, i) => (
           <div
             key={i + SKELETON_WIDTHS.length}
             className="skeleton"
-            style={{ width: SKELETON_WIDTHS[(i + 3) % SKELETON_WIDTHS.length], height: '16px' }}
+            style={{ width: SKELETON_WIDTHS[(i + 3) % SKELETON_WIDTHS.length], height: '14px', animationDelay: `${(i + SKELETON_WIDTHS.length) * 60}ms` }}
+          />
+        ))}
+      </div>
+      {/* Third paragraph group */}
+      <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        {[80, 65, 90, 72, 85].map((w, i) => (
+          <div
+            key={`p3-${i}`}
+            className="skeleton"
+            style={{ width: `${w}%`, height: '14px', animationDelay: `${(i + 16) * 60}ms` }}
           />
         ))}
       </div>
@@ -62,8 +73,7 @@ function TextView({ text }: { text: string }) {
         height: '100%',
         overflowY: 'auto',
         background: 'var(--surface)',
-        borderRight: '1px solid var(--border)',
-        padding: '24px',
+        padding: '24px 28px',
       }}
     >
       <pre
@@ -71,10 +81,11 @@ function TextView({ text }: { text: string }) {
           whiteSpace: 'pre-wrap',
           wordBreak: 'break-word',
           fontFamily: 'inherit',
-          fontSize: '13px',
-          lineHeight: '1.7',
+          fontSize: '13.5px',
+          lineHeight: '1.8',
           color: 'var(--text-primary)',
           margin: 0,
+          letterSpacing: '0.01em',
         }}
       >
         {text}

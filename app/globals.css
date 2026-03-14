@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&family=DM+Mono:wght@400;500&display=swap');
 
 :root {
   --bg: #0a0a0a;
@@ -6,6 +7,7 @@
   --surface-2: #1a1a1a;
   --surface-3: #222222;
   --border: #2a2a2a;
+  --border-subtle: #1e1e1e;
   --text-primary: #f0f0f0;
   --text-secondary: #888888;
   --text-muted: #555555;
@@ -22,10 +24,11 @@
 html, body {
   background: var(--bg);
   color: var(--text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 14px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 ::selection {
@@ -75,3 +78,59 @@ html, body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--border); }
+
+/* Entrance animation */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-enter {
+  animation: fadeUp 0.4s ease both;
+}
+
+/* Mono font utility */
+.font-mono {
+  font-family: 'DM Mono', 'SF Mono', 'Fira Code', monospace;
+}
+
+/* Loading dots */
+@keyframes loadDots {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+.loading-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: loadDots 1.2s ease-in-out infinite;
+}
+.loading-dot:nth-child(2) { animation-delay: 0.2s; }
+.loading-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* Tab hover utility */
+.tab-btn:hover {
+  color: var(--text-primary) !important;
+  background: var(--surface-2);
+}
+
+/* Accent glow on active inputs */
+.input-focus:focus {
+  outline: none;
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12) !important;
+}
+
+/* Button press feel */
+.btn-press:active {
+  transform: scale(0.97);
+}
