@@ -5,10 +5,15 @@ const MAX_BYTES = 20 * 1024 * 1024 // 20MB
 const FETCH_TIMEOUT_MS = 10_000
 
 async function extractPdfText(buffer: Buffer): Promise<string> {
-  const { PDFParse } = await import('pdf-parse')
-  const parser = new PDFParse({ data: buffer })
-  const result = await parser.getText()
-  return result.text
+  try {
+    const { PDFParse } = await import('pdf-parse')
+    const parser = new PDFParse({ data: buffer })
+    const result = await parser.getText()
+    return result.text
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    throw new Error(`PDF parse failed: ${msg}`)
+  }
 }
 
 async function fetchPdfFromUrl(url: string): Promise<Buffer> {
@@ -27,7 +32,7 @@ async function fetchPdfFromUrl(url: string): Promise<Buffer> {
     }
 
     const contentLength = res.headers.get('content-length')
-    if (contentLength && parseInt(contentLength) > MAX_BYTES) {
+    if (contentLength && parseInt(contentLength, 10) > MAX_BYTES) {
       throw new Error('PDF exceeds 20MB size limit')
     }
 
@@ -86,6 +91,9 @@ export async function POST(request: NextRequest) {
     // Return text + pdfSource only — classification is done separately by /api/classify
     return NextResponse.json({ text, pdfSource })
   } catch (err) {
+    if (err instanceof Error && err.name === 'AbortError') {
+      return NextResponse.json({ error: 'PDF fetch timed out (10s limit)' }, { status: 504 })
+    }
     const message = err instanceof Error ? err.message : 'Upload failed'
     const status = message.includes('20MB') ? 413 : 500
     return NextResponse.json({ error: message }, { status })

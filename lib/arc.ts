@@ -33,7 +33,11 @@ export async function arcComplete(
   }
 
   const data = await res.json()
-  return data.choices[0].message.content as string
+  const content = data?.choices?.[0]?.message?.content
+  if (typeof content !== 'string') {
+    throw new Error(`Arc error (${route}): unexpected response shape — ${JSON.stringify(data)}`)
+  }
+  return content
 }
 
 /**
