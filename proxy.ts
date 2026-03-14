@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createHash } from 'crypto'
 
-function getSessionToken(): string {
-  return createHash('sha256')
-    .update(process.env.DEMO_PASSPHRASE! + process.env.DEMO_SESSION_SALT!)
-    .digest('hex')
+// Edge runtime doesn't support Node's crypto module — use Web Crypto API instead
+async function getSessionToken(): Promise<string> {
+  const passphrase = process.env.DEMO_PASSPHRASE ?? ''
+  const salt = process.env.DEMO_SESSION_SALT ?? ''
+  const data = new TextEncoder().encode(passphrase + salt)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+  return Array.from(new Uint8Array(hashBuffer))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('')
 }
 
 /**
@@ -21,7 +25,7 @@ function safeCompare(a: string, b: string): boolean {
   return result === 0
 }
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Public paths — no auth required
@@ -37,7 +41,7 @@ export function proxy(request: NextRequest) {
   }
 
   const cookie = request.cookies.get('demo_session')
-  const expected = getSessionToken()
+  const expected = await getSessionToken()
 
   if (!cookie || !safeCompare(cookie.value, expected)) {
     const loginUrl = new URL('/login', request.url)
