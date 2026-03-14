@@ -59,8 +59,8 @@ export default function DocPage() {
     )
   }
 
-  // docKey for tab remounting — use a hash of text length + first 100 chars
-  const docKey = `${docData.text.length}-${docData.text.slice(0, 50)}`
+  // docKey for tab remounting — combine length + start + end for collision resistance
+  const docKey = `${docData.text.length}-${docData.text.slice(0, 100)}-${docData.text.slice(-50)}`
 
   return (
     <div style={{
